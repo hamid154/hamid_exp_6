@@ -1,0 +1,338 @@
+================================================================================
+EXPERIMENT 6: PRODUCT CATALOG APPLICATION USING ASP.NET MVC ARCHITECTURE
+(Controllers, Models, Views, Routing)
+Name: Hamid Hussain
+================================================================================
+
+--------------------------------------------------------------------------------
+1. MODEL: Models/Product.cs
+--------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace Practical_6.Models
+{
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public decimal Price { get; set; }
+    }
+}
+
+
+--------------------------------------------------------------------------------
+2. CONTROLLER: Controllers/HomeController.cs
+--------------------------------------------------------------------------------
+using Practical_6.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace Practical_6.Controllers
+{
+    public class HomeController : Controller
+    {
+        // GET: Home
+        public ActionResult Index()
+        {
+            List<Product> products = new List<Product>()
+            {
+                new Product { Id = 1, Name = "Laptop", Category = "Electronics", Price = 55000 },
+                new Product { Id = 2, Name = "Mobile", Category = "Electronics", Price = 25000 },
+                new Product { Id = 3, Name = "Headphones", Category = "Accessories", Price = 2000 },
+                new Product { Id = 4, Name = "Shoes", Category = "Footwear", Price = 3000 },
+                new Product { Id = 5, Name = "Watch", Category = "Accessories", Price = 5000 }
+            };
+
+            return View(products);
+        }
+    }
+}
+
+
+--------------------------------------------------------------------------------
+3. VIEW: Views/Home/Index.cshtml
+--------------------------------------------------------------------------------
+@model IEnumerable<Practical_6.Models.Product>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Catalog</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #070b18;
+            background-image: 
+                radial-gradient(circle at 10% 20%, #4f46e5 0, transparent 30%),
+                radial-gradient(circle at 90% 80%, #06b6d4 0, transparent 30%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Floating Background Orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .orb1 {
+            width: 180px;
+            height: 180px;
+            background: #8b5cf6;
+            top: 5%;
+            left: 30px;
+        }
+
+        .orb2 {
+            width: 220px;
+            height: 220px;
+            background: #06b6d4;
+            bottom: 5%;
+            right: 30px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 35px 20px 20px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin: 0;
+            letter-spacing: 1px;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 17px;
+        }
+
+        /* Main Container */
+        .container {
+            width: 90%;
+            max-width: 1150px;
+            margin: auto;
+            position: relative;
+        }
+
+        /* Product Grid */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            padding-bottom: 60px;
+        }
+
+        /* Product Card */
+        .card {
+            position: relative;
+            padding: 28px;
+            border-radius: 25px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, .05));
+            border: 1px solid rgba(255, 255, 255, .25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .25);
+            transform-style: preserve-3d;
+            transition: transform .4s ease, box-shadow .4s ease;
+        }
+
+        /* 3D Hover Effect */
+        .card:hover {
+            transform: perspective(900px) rotateX(6deg) rotateY(-6deg) translateY(-12px) scale(1.02);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, .55), 0 0 35px rgba(99, 102, 241, .3);
+        }
+
+        /* Product Icon */
+        .icon {
+            width: 95px;
+            height: 95px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 25px;
+            font-size: 42px;
+            background: linear-gradient(145deg, #6366f1, #312e81);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .35), inset 2px 2px 10px rgba(255, 255, 255, .25);
+            transform: translateZ(40px);
+        }
+
+        /* Product Name */
+        .card h2 {
+            text-align: center;
+            font-size: 25px;
+            margin: 0 0 10px;
+            transform: translateZ(30px);
+        }
+
+        /* Category */
+        .category {
+            display: block;
+            width: max-content;
+            margin: 0 auto 15px;
+            padding: 5px 10px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, .12);
+            color: #c4b5fd;
+            font-size: 14px;
+            transform: translateZ(25px);
+        }
+
+        /* Price */
+        .price {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #67e8f9;
+            margin: 0 0 20px;
+            transform: translateZ(35px);
+        }
+
+        /* Button */
+        .button {
+            display: block;
+            width: 100%;
+            padding: 13px 0;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #6366f1, #312e81, #06b6d4);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, .3);
+            transition: transform .2s, box-shadow .2s;
+            transform: translateZ(25px);
+        }
+
+        .button:hover {
+            transform: translateZ(45px) translateY(-3px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, .25);
+            background: linear-gradient(135deg, #6366f1, #312e81, #06b6d4);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 25px 0 15px;
+            color: #94a3b8;
+        }
+
+        /* Mobile */
+        @media(max-width: 600px) {
+            .header h1 {
+                font-size: 34px;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Orbs -->
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>🛍 Product Catalog</h1>
+        <p>Developed by Hamid Hussain</p>
+    </div>
+
+    <!-- Product Container -->
+    <div class="container">
+        <div class="products">
+            @foreach (var product in Model)
+            {
+                <div class="card">
+                    <!-- Product Icon -->
+                    <div class="icon">
+                        @if (product.Name == "Laptop") { <span>💻</span> }
+                        else if (product.Name == "Mobile") { <span>📱</span> }
+                        else if (product.Name == "Headphones") { <span>🎧</span> }
+                        else if (product.Name == "Shoes") { <span>👟</span> }
+                        else if (product.Name == "Watch") { <span>⌚</span> }
+                        else { <span>📦</span> }
+                    </div>
+
+                    <!-- Product Name -->
+                    <h2>@product.Name</h2>
+
+                    <!-- Category -->
+                    <span class="category">@product.Category</span>
+
+                    <!-- Price -->
+                    <div class="price">₹@product.Price</div>
+
+                    <!-- Button -->
+                    <a href="#" class="button">View Product →</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2026 Product Catalog | ASP.NET MVC | Hamid Hussain
+    </div>
+
+</body>
+</html>
+
+
+--------------------------------------------------------------------------------
+4. ROUTING CONFIGURATION: App_Start/RouteConfig.cs
+--------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
+
+namespace Practical_6
+{
+    public class RouteConfig
+    {
+        public static void RegisterRoutes(RouteCollection routes)
+        {
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+            );
+        }
+    }
+}
+================================================================================
